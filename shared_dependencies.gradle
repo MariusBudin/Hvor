@@ -1,0 +1,24 @@
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    implementation "androidx.core:core-ktx:$versions.ktx"
+
+    //Hilt
+    implementation "com.google.dagger:hilt-android:$versions.hiltAndroid"
+    kapt "com.google.dagger:hilt-android-compiler:$versions.hiltAndroid"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$versions.hiltLifecycle"
+    kapt "androidx.hilt:hilt-compiler:$versions.hiltCompiler"
+
+    //Timber
+    implementation "com.jakewharton.timber:timber:$versions.timber"
+
+    ///////////////////
+
+    //Testing
+    testImplementation "junit:junit:$versions.junit"
+    testImplementation "io.mockk:mockk:$versions.mockk"
+    testImplementation "org.amshove.kluent:kluent:$versions.kluent"
+    testImplementation "org.robolectric:robolectric:$versions.robolectric"
+
+    androidTestImplementation "androidx.test.ext:junit:$versions.junitExt"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
+}

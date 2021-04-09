@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Hvor</string>
+
+    <string name="action_retry">Retry</string>
+    <string name="failure_network_connection">No network connection</string>
+    <string name="failure_server_error">Server error</string>
+    <string name="failure_generic_error">Error</string>
+    <string name="venues_title">Venues</string>
+</resources>
