@@ -6,4 +6,5 @@
     <string name="failure_server_error">Server error</string>
     <string name="failure_generic_error">Error</string>
     <string name="venues_title">Venues</string>
+    <string name="venues_distance_meters">%1$dm</string>
 </resources>

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.mariusbudin.hvor.R
 import com.mariusbudin.hvor.core.extension.load
 import com.mariusbudin.hvor.core.extension.loadCircle
 import com.mariusbudin.hvor.databinding.ItemVenueBinding
@@ -31,11 +32,16 @@ class VenuesAdapter(
         ) {
             with(item) {
                 binding.title.text = name
+                mainCategory?.let { binding.category.text = it }
+                location.distance?.let {
+                    binding.distance.text =
+                        binding.root.resources.getString(R.string.venues_distance_meters, it)
+                }
 
                 if (photos.isNullOrEmpty()) {
                     binding.image.load(mainCategoryIcon)
                 } else {
-                    binding.image.loadCircle(photos[0].thumbnailUrl)
+                    binding.image.load(photos[0].url)
                 }
                 itemView.setOnClickListener { onSelect(id) }
             }

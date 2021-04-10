@@ -35,7 +35,7 @@ class VenuesViewModel @Inject constructor(
     private fun handleVenues(venues: List<VenueModel>) {
         val newVenues = venues.map(VenueModel::mapToPresentationModel)
         _venues.value = newVenues
-        newVenues.forEach { getVenuePhotos(it) }
+//        newVenues.forEach { getVenuePhotos(it) }
     }
 
     /*
