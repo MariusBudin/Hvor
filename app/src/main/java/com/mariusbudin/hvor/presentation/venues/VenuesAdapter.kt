@@ -6,12 +6,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mariusbudin.hvor.R
 import com.mariusbudin.hvor.core.extension.load
-import com.mariusbudin.hvor.core.extension.loadCircle
 import com.mariusbudin.hvor.databinding.ItemVenueBinding
 import com.mariusbudin.hvor.presentation.venues.model.Venue
 
 class VenuesAdapter(
-    private val onSelect: (id: String) -> Unit
+    private val onSelect: (venue: Venue) -> Unit
 ) : ListAdapter<Venue, VenuesAdapter.VenueViewHolder>(Venue.diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VenueViewHolder {
@@ -28,7 +27,7 @@ class VenuesAdapter(
 
         fun bind(
             item: Venue,
-            onSelect: (id: String) -> Unit
+            onSelect: (venue: Venue) -> Unit
         ) {
             with(item) {
                 binding.title.text = name
@@ -38,12 +37,8 @@ class VenuesAdapter(
                         binding.root.resources.getString(R.string.venues_distance_meters, it)
                 }
 
-                if (photos.isNullOrEmpty()) {
-                    binding.image.load(mainCategoryIcon)
-                } else {
-                    binding.image.load(photos[0].url)
-                }
-                itemView.setOnClickListener { onSelect(id) }
+                binding.image.load(if (photos.isNullOrEmpty()) mainCategoryIcon else photos[0].url)
+                itemView.setOnClickListener { onSelect(this) }
             }
         }
     }
