@@ -14,7 +14,7 @@ class VenuesRepository @Inject constructor(
     private val remote: Remote,
     private val local: Local
 ) {
-    fun venues() = remote.venues()
+    fun venues(latLng:String) = remote.venues(latLng)
     fun venuePhotos(id: String) = remote.venuePhotos(id)
 
     class Remote @Inject constructor(
@@ -22,10 +22,10 @@ class VenuesRepository @Inject constructor(
         private val api: VenuesApi
     ) : BaseRepository.Remote(networkHandler) {
 
-        fun venues(): Either<Failure, List<VenueEntity>> {
+        fun venues(latLng:String): Either<Failure, List<VenueEntity>> {
             return when (networkHandler.isNetworkAvailable()) {
                 true -> request(
-                    api.venues(),
+                    api.venues(latLng),
                     { it.response.venues },
                     emptyList()
                 )

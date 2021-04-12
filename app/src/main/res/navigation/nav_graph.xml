@@ -9,7 +9,7 @@
         android:id="@+id/venuesFragment"
         android:name="com.mariusbudin.hvor.presentation.venues.VenuesFragment"
         android:label="@string/venues_title"
-        tools:layout="@layout/generic_list_fragment">
+        tools:layout="@layout/venues_fragment">
 <!--        <action-->
 <!--            android:id="@+id/action_venuesFragment_to_venueDetailsFragment"-->
 <!--            app:destination="@id/venueDetailsFragment" />-->

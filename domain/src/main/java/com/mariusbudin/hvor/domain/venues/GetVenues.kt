@@ -10,8 +10,11 @@ import javax.inject.Inject
 
 class GetVenues
 @Inject constructor(private val repository: VenuesRepository) :
-    UseCase<List<VenueModel>, UseCase.None>() {
+    UseCase<List<VenueModel>, GetVenues.Params>() {
 
-    override suspend fun run(params: None) =
-        repository.venues().map { it.map(VenueEntity::mapToDomainModel) }
+    override suspend fun run(params: Params) =
+        repository.venues("${params.lat},${params.lng}")
+            .map { it.map(VenueEntity::mapToDomainModel) }
+
+    data class Params(val lat: Double, val lng: Double)
 }

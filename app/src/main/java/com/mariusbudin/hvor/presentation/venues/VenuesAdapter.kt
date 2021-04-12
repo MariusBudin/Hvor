@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.mariusbudin.hvor.R
+import com.mariusbudin.hvor.core.extension.hide
 import com.mariusbudin.hvor.core.extension.load
-import com.mariusbudin.hvor.core.extension.loadCircle
+import com.mariusbudin.hvor.core.extension.show
 import com.mariusbudin.hvor.databinding.ItemVenueBinding
 import com.mariusbudin.hvor.presentation.venues.model.Venue
 
 class VenuesAdapter(
-    private val onSelect: (id: String) -> Unit
+    private val onSelect: (venue: Venue) -> Unit
 ) : ListAdapter<Venue, VenuesAdapter.VenueViewHolder>(Venue.diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VenueViewHolder {
@@ -27,17 +29,20 @@ class VenuesAdapter(
 
         fun bind(
             item: Venue,
-            onSelect: (id: String) -> Unit
+            onSelect: (venue: Venue) -> Unit
         ) {
             with(item) {
                 binding.title.text = name
+                mainCategory?.let { binding.category.text = it }
+                location.distance?.let {
+                    binding.distance.text =
+                        binding.root.resources.getString(R.string.venues_distance_meters, it)
+                    binding.categorySeparator.show()
+                } ?: binding.categorySeparator.hide()
+                location.address?.let { binding.address.text = it }
 
-                if (photos.isNullOrEmpty()) {
-                    binding.image.load(mainCategoryIcon)
-                } else {
-                    binding.image.loadCircle(photos[0].thumbnailUrl)
-                }
-                itemView.setOnClickListener { onSelect(id) }
+                binding.image.load(if (photos.isNullOrEmpty()) mainCategoryIcon else photos[0].url)
+                itemView.setOnClickListener { onSelect(this) }
             }
         }
     }

@@ -5,5 +5,8 @@
     <string name="failure_network_connection">No network connection</string>
     <string name="failure_server_error">Server error</string>
     <string name="failure_generic_error">Error</string>
+    <string name="failure_permission_denied">Permission denied</string>
     <string name="venues_title">Venues</string>
+    <string name="venues_distance_meters">%1$dm</string>
+    <string name="venues_locate_me">Locate me</string>
 </resources>
