@@ -52,11 +52,9 @@ class VenuesViewModel @Inject constructor(
 
     fun onBack() {
         when (_state.value) {
-            is VenuesState.Exploration -> _state.value = VenuesState.Leave
             is VenuesState.Navigation -> _state.value =
                 currentVenues?.let { VenuesState.Exploration(it) }
-            else -> {/*ignore for now*/
-            }
+            else -> _state.value = VenuesState.Leave
         }
     }
 
@@ -75,7 +73,7 @@ class VenuesViewModel @Inject constructor(
 
             _state.value = VenuesState.Exploration(newVenues)
 
-            newVenues.forEach { getVenuePhotos(it) }
+//            newVenues.forEach { getVenuePhotos(it) }
         }
     }
 

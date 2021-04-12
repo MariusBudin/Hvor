@@ -15,6 +15,9 @@ android {
         targetSdkVersion versions.targetSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "FOURSQUARE_CLIENT_ID", "\"" + getLocalProperty("FOURSQUARE_CLIENT_ID") + "\""
+        buildConfigField "String", "FOURSQUARE_CLIENT_SECRET", "\"" + getLocalProperty("FOURSQUARE_CLIENT_SECRET") + "\""
     }
 
     buildTypes {
@@ -43,4 +46,10 @@ dependencies {
     implementation "androidx.room:room-runtime:${versions.room}"
     implementation "androidx.room:room-ktx:${versions.room}"
     kapt "androidx.room:room-compiler:${versions.room}"
+}
+
+def getLocalProperty(property) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty(property)
 }

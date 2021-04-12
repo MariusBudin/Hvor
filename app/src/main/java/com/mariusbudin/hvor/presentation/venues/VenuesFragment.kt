@@ -1,32 +1,32 @@
 package com.mariusbudin.hvor.presentation.venues
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.VectorDrawable
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.annotation.DrawableRes
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mariusbudin.hvor.R
 import com.mariusbudin.hvor.core.extension.hide
 import com.mariusbudin.hvor.core.extension.show
+import com.mariusbudin.hvor.core.platform.GpsTracker
 import com.mariusbudin.hvor.core.platform.autoCleared
 import com.mariusbudin.hvor.databinding.VenuesFragmentBinding
 import com.mariusbudin.hvor.presentation.common.platform.BaseFragment
+import com.mariusbudin.hvor.presentation.common.platform.getBitmapDescriptor
 import com.mariusbudin.hvor.presentation.venues.model.Venue
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -39,6 +39,8 @@ class VenuesFragment : BaseFragment(), OnMapReadyCallback {
 
     private lateinit var adapter: VenuesAdapter
     private var map: GoogleMap? = null
+    private lateinit var locationPermissionResult: ActivityResultLauncher<Array<String>>
+    private var gpsTracker: GpsTracker? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +61,39 @@ class VenuesFragment : BaseFragment(), OnMapReadyCallback {
 
         activity?.onBackPressedDispatcher?.addCallback { viewModel.onBack() }
         binding.venueDetails.setOnCloseListener { viewModel.onBack() }
-        onMoved()
+        binding.userLocation.setOnClickListener { checkLocation() }
+
+        locationPermissionResult =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+                when (it[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                        it[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                    true -> {
+                        gpsTracker?.getLocation()
+                        binding.userLocation.hide()
+                    }
+                    else -> {
+                        notify(R.string.failure_permission_denied)
+                        binding.userLocation.show()
+                    }
+                }
+            }
+
+        onMoved() //move to a default location first
+
+        context?.let {
+            gpsTracker = GpsTracker(it)
+            gpsTracker?.onNewLocationAvailable = { lat, lng ->
+                map?.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(lat, lng),
+                        VENUES_LIST_ZOOM
+                    )
+                )
+                onMoved(lat, lng)
+            }
+        }
+
+        checkLocation()
     }
 
     private fun setupRecyclerView() {
@@ -141,7 +175,7 @@ class VenuesFragment : BaseFragment(), OnMapReadyCallback {
     private fun renderLeave() {
         Timber.d("Render leave")
 
-        activity?.onBackPressed()
+        activity?.finish()
     }
 
     private fun updateVenuesList(venues: List<Venue>?) {
@@ -159,7 +193,7 @@ class VenuesFragment : BaseFragment(), OnMapReadyCallback {
             val location = LatLng(venue.location.lat!!, venue.location.lng!!)
             map?.addMarker(
                 MarkerOptions().position(location).icon(
-                    getBitmapDescriptor(R.drawable.ic_baseline_location_pin_circle_24)
+                    context?.getBitmapDescriptor(R.drawable.ic_baseline_location_pin_circle_24)
                 )
             )
             map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location, VENUE_DETAIL_ZOOM))
@@ -193,15 +227,37 @@ class VenuesFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun getBitmapDescriptor(@DrawableRes id: Int): BitmapDescriptor? {
-        val vectorDrawable = getDrawable(requireContext(), id) as VectorDrawable
-        val h = vectorDrawable.intrinsicHeight
-        val w = vectorDrawable.intrinsicWidth
-        vectorDrawable.setBounds(0, 0, w, h)
-        val bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bm)
-        vectorDrawable.draw(canvas)
-        return BitmapDescriptorFactory.fromBitmap(bm)
+    private fun checkLocation() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                gpsTracker?.getLocation()
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                // In an educational UI, explain to the user why your app requires this
+                // permission for a specific feature to behave as expected.
+                askForPermissions()
+            }
+            else -> {
+                askForPermissions()
+            }
+        }
+    }
+
+    private fun askForPermissions() {
+        locationPermissionResult.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        gpsTracker?.stopUsingGPS()
     }
 
     companion object {

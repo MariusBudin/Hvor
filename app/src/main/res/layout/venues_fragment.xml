@@ -41,6 +41,19 @@
         app:layout_constraintStart_toStartOf="@id/map"
         app:layout_constraintTop_toTopOf="@id/map" />
 
+    <Button
+        android:id="@+id/user_location"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="@string/venues_locate_me"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/recycler"
+        app:layout_constraintEnd_toEndOf="@id/map"
+        app:layout_constraintStart_toStartOf="@id/map"
+        tools:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="0dp"
