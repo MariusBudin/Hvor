@@ -92,7 +92,10 @@ class VenuesFragment : BaseFragment(), OnMapReadyCallback {
                 onMoved(lat, lng)
             }
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
         checkLocation()
     }
 

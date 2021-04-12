@@ -4,7 +4,6 @@ import com.mariusbudin.hvor.core.exception.Failure
 import com.mariusbudin.hvor.core.functional.Either
 import com.mariusbudin.hvor.data.UnitTest
 import com.mariusbudin.hvor.data.common.platform.NetworkHandler
-import com.mariusbudin.hvor.data.venues.model.Status
 import com.mariusbudin.hvor.data.venues.model.VenueEntity
 import com.mariusbudin.hvor.data.venues.model.remote.*
 import io.mockk.Called
@@ -45,45 +44,43 @@ class VenuesRepositoryTest : UnitTest() {
         every { venuesResponse.body() } returns null
         every { venuesResponse.isSuccessful } returns true
         every { venuesCall.execute() } returns venuesResponse
-        every { api.venues() } returns venuesCall
+        every { api.venues(any()) } returns venuesCall
 
-        val venues = repository.venues()
+        val venues = repository.venues(DEFAULT_LOCATION)
 
         venues shouldEqual Either.Right(emptyList<VenueEntity>())
-        verify(exactly = 1) { api.venues() }
+        verify(exactly = 1) { api.venues(DEFAULT_LOCATION) }
     }
 
     @Test
     fun `should return venues list from api`() {
         val venue = VenueEntity(
-            id = 1,
-            name = "Rick",
-            status = Status.ALIVE,
-            species = "human",
-            VenueLocationEntity.empty,
-            image = "fake.url"
+            id = "some_id_x345",
+            name = "Cohi Bar",
+            location = Location.empty,
+            categories = listOf(Category.empty)
         )
 
         every { networkHandler.isNetworkAvailable() } returns true
         every { venuesResponse.body() } returns VenuesResponse(
-            InfoRemoteModel.empty,
-            listOf(venue)
+            Meta.empty,
+            VenuesWrapper(listOf(venue))
         )
         every { venuesResponse.isSuccessful } returns true
         every { venuesCall.execute() } returns venuesResponse
-        every { api.venues() } returns venuesCall
+        every { api.venues(DEFAULT_LOCATION) } returns venuesCall
 
-        val venues = repository.venues()
+        val venues = repository.venues(DEFAULT_LOCATION)
 
         venues shouldEqual Either.Right(listOf(venue))
-        verify(exactly = 1) { api.venues() }
+        verify(exactly = 1) { api.venues(any()) }
     }
 
     @Test
     fun `api should return network failure when no connection`() {
         every { networkHandler.isNetworkAvailable() } returns false
 
-        val venues = repository.venues()
+        val venues = repository.venues(DEFAULT_LOCATION)
 
         venues shouldBeInstanceOf Either::class.java
         venues.isLeft shouldEqual true
@@ -98,9 +95,9 @@ class VenuesRepositoryTest : UnitTest() {
         every { networkHandler.isNetworkAvailable() } returns true
         every { venuesResponse.isSuccessful } returns false
         every { venuesCall.execute() } returns venuesResponse
-        every { api.venues() } returns venuesCall
+        every { api.venues(DEFAULT_LOCATION) } returns venuesCall
 
-        val venues = repository.venues()
+        val venues = repository.venues(DEFAULT_LOCATION)
 
         venues shouldBeInstanceOf Either::class.java
         venues.isLeft shouldEqual true
@@ -113,14 +110,18 @@ class VenuesRepositoryTest : UnitTest() {
     fun `request should catch exceptions`() {
         every { networkHandler.isNetworkAvailable() } returns true
         every { venuesCall.execute() } returns venuesResponse
-        every { api.venues() } returns venuesCall
+        every { api.venues(DEFAULT_LOCATION) } returns venuesCall
 
-        val venues = repository.venues()
+        val venues = repository.venues(DEFAULT_LOCATION)
 
         venues shouldBeInstanceOf Either::class.java
         venues.isLeft shouldEqual true
         venues.fold(
             { failure -> failure shouldBeInstanceOf Failure.ServerError::class.java },
             {})
+    }
+
+    companion object {
+        const val DEFAULT_LOCATION = "41.3865315403949,2.1694530688896734"
     }
 }

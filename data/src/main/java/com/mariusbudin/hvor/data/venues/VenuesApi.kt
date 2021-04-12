@@ -13,7 +13,7 @@ import javax.inject.Inject
 interface VenuesApi {
 
     companion object {
-        private const val VENUES_LIMIT = 3
+        private const val VENUES_LIMIT = 5
         private const val PHOTOS_LIMIT = 1
         private const val RADIUS_LIMIT = 1000
         private const val VERSION = "20210409"

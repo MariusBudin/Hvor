@@ -7,4 +7,9 @@ data class Category(
     val suffix: String,
     val icon: Icon,
     val primary: Boolean
-)
+) {
+    companion object {
+        val empty =
+            Category("", "", "", "", Icon.empty, true)
+    }
+}

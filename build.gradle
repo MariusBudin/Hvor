@@ -36,6 +36,7 @@ buildscript {
             'robolectric'       : '4.4',
             'junitExt'          : '1.1.2',
             'espresso'          : '3.3.0',
+            'coroutinesTest'    : '1.4.3',
     ]
     ext.names = [
             'applicationId': 'com.mariusbudin.hvor'
