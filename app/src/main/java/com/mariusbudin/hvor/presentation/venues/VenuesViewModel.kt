@@ -75,7 +75,7 @@ class VenuesViewModel @Inject constructor(
 
             _state.value = VenuesState.Exploration(newVenues)
 
-//            newVenues.forEach { getVenuePhotos(it) }
+            newVenues.forEach { getVenuePhotos(it) }
         }
     }
 
