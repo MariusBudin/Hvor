@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/black"
     tools:context=".presentation.venues.VenuesFragment">
 
     <fragment
@@ -54,7 +53,7 @@
         app:layout_constraintStart_toStartOf="@id/map"
         tools:visibility="visible" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
         android:id="@+id/recycler"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -63,7 +62,12 @@
         android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:shimmer_demo_child_count="2"
+        app:shimmer_demo_grid_child_count="2"
+        app:shimmer_demo_layout="@layout/item_venue"
+        app:shimmer_demo_layout_manager_type="linear_horizontal"
+        app:shimmer_demo_angle="20" />
 
     <ProgressBar
         android:id="@+id/progress"

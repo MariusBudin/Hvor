@@ -5,7 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mariusbudin.hvor.R
+import com.mariusbudin.hvor.core.extension.hide
 import com.mariusbudin.hvor.core.extension.load
+import com.mariusbudin.hvor.core.extension.show
 import com.mariusbudin.hvor.databinding.ItemVenueBinding
 import com.mariusbudin.hvor.presentation.venues.model.Venue
 
@@ -35,7 +37,9 @@ class VenuesAdapter(
                 location.distance?.let {
                     binding.distance.text =
                         binding.root.resources.getString(R.string.venues_distance_meters, it)
-                }
+                    binding.categorySeparator.show()
+                } ?: binding.categorySeparator.hide()
+                location.address?.let { binding.address.text = it }
 
                 binding.image.load(if (photos.isNullOrEmpty()) mainCategoryIcon else photos[0].url)
                 itemView.setOnClickListener { onSelect(this) }

@@ -136,11 +136,11 @@ class VenuesFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun renderLoadingVenues() {
-        Timber.d("Render loading")
+        binding.recycler.showShimmerAdapter()
     }
 
     private fun renderNoLocation() {
-        Timber.d("Render no location")
+        binding.recycler.showShimmerAdapter()
     }
 
     private fun renderVenueDetails(detailVenue: Venue, otherVenues: List<Venue>?) {
@@ -165,6 +165,7 @@ class VenuesFragment : BaseFragment(), OnMapReadyCallback {
         binding.venueDetails.hide()
         removeAllMarkers()
         updateVenuesList(venues)
+        binding.recycler.hideShimmerAdapter()
     }
 
     override fun renderFailure(@StringRes message: Int) {

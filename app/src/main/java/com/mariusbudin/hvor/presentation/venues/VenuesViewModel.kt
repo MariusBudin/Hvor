@@ -59,6 +59,8 @@ class VenuesViewModel @Inject constructor(
     }
 
     private fun getVenues(lat: Double, lng: Double) {
+        _state.value = VenuesState.LoadingVenues
+
         getVenues(GetVenues.Params(lat, lng), viewModelScope) { result ->
             result.fold(::handleFailure) { handleVenues(it, lat, lng) }
         }
