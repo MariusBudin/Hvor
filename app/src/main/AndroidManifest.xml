@@ -26,7 +26,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
 
-        <activity android:name="com.mariusbudin.hvor.presentation.MainActivity">
+        <activity android:name="com.mariusbudin.hvor.presentation.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

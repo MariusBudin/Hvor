@@ -138,7 +138,7 @@ class GpsTracker(private val context: Context) : Service(), LocationListener {
         return canGetLocation
     }
 
-    override fun onLocationChanged(location: Location?) {
+    override fun onLocationChanged(location: Location) {
         currentLocation = location
         currentLocation?.let {
             onNewLocationAvailable?.invoke(
@@ -148,9 +148,8 @@ class GpsTracker(private val context: Context) : Service(), LocationListener {
         }
     }
 
-    override fun onProviderDisabled(provider: String?) {}
-    override fun onProviderEnabled(provider: String?) {}
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+    override fun onProviderDisabled(provider: String) {}
+    override fun onProviderEnabled(provider: String) {}
     override fun onBind(arg0: Intent?): IBinder? {
         return null
     }

@@ -5,8 +5,6 @@ dependencies {
     //Hilt
     implementation "com.google.dagger:hilt-android:$versions.hiltAndroid"
     kapt "com.google.dagger:hilt-android-compiler:$versions.hiltAndroid"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$versions.hiltLifecycle"
-    kapt "androidx.hilt:hilt-compiler:$versions.hiltCompiler"
 
     //Timber
     implementation "com.jakewharton.timber:timber:$versions.timber"
